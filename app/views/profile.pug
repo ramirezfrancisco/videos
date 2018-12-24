@@ -1,0 +1,88 @@
+extends layout.pug
+block content
+    include templates/nav
+    div.container
+        div.row
+            div(class=['col-xs-12'])
+                br
+                ol(class="breadcrumb")
+                    li
+                        a(href="/inicio") Inicio
+                    li.active #{user}
+        div.row
+            div(class=['col-xs-12','col-sm-4'])
+                h2.text-success Mi Perfíl
+                div.well
+                    center
+                        figure
+                            img(src=`/image/avatars/${data_user[0].avatar}` class="img-responsive img-thumbnail avatar")
+                    h2.text-center
+                        span #{data_user[0].name} #{data_user[0].last_name}
+                    hr
+                    p 
+                        span.glyphicon.glyphicon-envelope 
+                        span 
+                        span #{data_user[0].email}
+            div(class=['col-xs-12','col-sm-8'])
+                if(error_image)
+                    div(role="alet").alert.alert-danger
+                        button(type="button" class="close" data-dismiss="alert" aria-label="Close")
+                            span(aria-hidden="true") &times;
+                        strong #{error_image}
+                //Nav tabs
+                ul(class=['nav','nav-tabs','nav-justified'])
+                    li(role="presentation", class="active")
+                        a(href="#videos", role="tab", data-toggle="tab") 
+                            span.glyphicon.glyphicon-upload
+                            span 
+                            span Publicaciones
+                    li(role="presentation")
+                        a(href="#notificaciones", role="tab", data-toggle="tab") 
+                            span.glyphicon.glyphicon-bell
+                            span 
+                            span Notificaciones
+                    li(role="presentation")
+                        a(href="#configuraciones", role="tab", data-toggle="tab") 
+                            span.glyphicon.glyphicon-cog
+                            span 
+                            span Configuraciones
+                //Tab panels
+                div.tab-content
+                    div(class=['tab-pane','fade','in','active'], id="videos")
+                        a.button.add(href="/agregar", type="button", class=['btn','btn-subirvideo','btn-block','btn-lg']) 
+                            span(class=['glyphicon glyphicon-upload']) 
+                            span 
+                            span Subir video
+                        article                    
+                            if(data.length)
+                                each video in data
+                                    div(class=["col-sm-4"])
+                                        div(class=["panel","panel-primary"])
+                                            div(class=["panel-heading"])
+                                                h5(class="media-heading") #{video.titulo}
+                                            div(class="panel-body")
+                                                center
+                                                    a(href="/detalles/"+video.id)
+                                                        img(class=["media-object","object-left"], width="64px",height="64px" src=`https://i.ytimg.com/vi/${video.url}/0.jpg`, alt="Vista previa")
+                                                hr
+                                                p #{video.descripcion}
+                                            div(class=["panel-footer"])
+                                                //form(method="post", class="form-inline", action="/eliminar/" + video.id)
+                                                a(class=['btn','btn-info','btn-block'], href="/editar/" + video.id) Editar
+                                                    //span 
+                                                    //input(type="button", class=['btn','btn-danger','btn-sm'], value="Eliminar", onclick="eliminar(this)")
+                            else
+                                div(role="alert").alert.alert-info No hay datos que mostrar
+                    div(class=['tab-pane','fade'], id="notificaciones")
+                        h1 Notificaciones
+                    div(class=['tab-pane','fade'], id="configuraciones")
+                        h1 Configuraciones
+                        form(method='post' action='/upload_avatar' enctype='multipart/form-data')
+                            input(type="hidden" name="id_auth" value=data_user[0].id)
+                            div.form-group
+                                label Avatar
+                                input(type='file' name='avatar' id='avatar' class='form-control')
+                            div.row.top-space
+                                div.col-xs-12.col-sm-6
+                                    input(type='submit' value='Guardar' class='btn btn-info')
+    include templates/footer

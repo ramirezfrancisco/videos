@@ -1,0 +1,144 @@
+extends layout.pug
+block content
+    include templates/nav
+    a.button.add(href="/agregar")
+        div.floatbutton
+            p.text-center
+                span(class=['glyphicon glyphicon-upload floatbutton_icon']) 
+                br
+                span video
+    div.container
+        div.row
+            div(class=['col-xs-12'])
+                br
+                ol(class="breadcrumb")
+                    li
+                        a(href="/inicio") Inicio
+                    li.active Detalles - #{data[0].titulo}
+                div(class="page-header")
+                    h1= data[0].titulo
+                div.thumbnail
+                    div(class=['embed-responsive','embed-responsive-16by9'])
+                        iframe(class=['embed-responsive-item'], src=`https://www.youtube.com/embed/${data[0].url}`)
+                    div.caption
+                        div.row
+                            div.col-xs-12.col-sm-8
+                                h4
+                                    strong !Valora mi video¡
+                                h3
+                                    strong.msj
+                                if(rating.length != 0)
+                                    h3
+                                        strong.msj !Gracias por tu voto¡ 
+                                            span.label.label-warning #{rating[0].votos}
+                                            span 
+                                            span(class=['glyphicon','glyphicon-star','gl-votos'])
+                                else
+                                    span(class=['star-rating'], id="starRating")
+                                        input(type='hidden', id='id_video', value=data[0].id_video, name="id_video")
+                                        input(type="hidden", id='id_auth', value=id_auth, name="id_auth")
+                                        input(type='radio', name='rating', value='1')
+                                        i
+                                        input(type='radio', name='rating', value='2')
+                                        i
+                                        input(type='radio', name='rating', value='3')
+                                        i
+                                        input(type='radio', name='rating', value='4')
+                                        i
+                                        input(type='radio', name='rating', value='5')
+                                        i
+                            div.col-xs-12.col-sm-4
+                                div.text-right
+                                    h3
+                                        a(href="/video/votos/"+data[0].id_video class="btn btn-default btn-lg")
+                                            strong Total de votos 
+                                            span(id='total_votos')
+                                                - var votos = data[0].votos
+                                                if(votos == null)
+                                                    span.label.label-success 0
+                                                else
+                                                    span.label.label-success #{data[0].votos}
+                div(class="well")
+                    a(href="/perfil/"+data[0].id class="btn btn-link")
+                        h3
+                            span.glyphicon.glyphicon-user
+                            span 
+                            strong #{data[0].name} #{data[0].last_name}
+                    h5
+                        span.glyphicon.glyphicon-time
+                        span 
+                        strong
+                            span= moment(data[0].fecha_publicacion).fromNow() 
+                        span 
+                        span -- 
+                        span.glyphicon.glyphicon-eye-open
+                        span 
+                        span(class=['label label-default']) #{data[0].visitas}
+                    h4
+                        span.glyphicon.glyphicon-tags
+                        span 
+                        span.label.label-primary #{data[0].categoria}
+                    strong
+                        p.text-danger Descripción: 
+                    p #{data[0].descripcion}
+                div(class="well comentarios")
+                    div.page-header 
+                        h1 Comentarios 
+                            small Que tú comentario sea positivo
+                    //********************Formulario para los comentarios*********************
+                    div.row
+                        div.col-xs-12.col-sm-6.col-sm-offset-3
+                            form(onsubmit="return sendComment(this)")
+                                input(type='hidden', id='id_video_comment', value=data[0].id_video, name="id_video_comment")
+                                input(type="hidden", id='id_auth_comment', value=id_auth, name="id_auth_comment")
+                                input(type="hidden", id="full_name", value=full_name, name="full_name")
+                                div.form-group
+                                    label(for='comment')
+                                    textarea(class='form-control', onkeypress="return validateInputText(event)", rows="3", cols="20", name="comment", id="comment")
+                                div(class=['hidden-xs','col-sm-6','col-sm-offset-3'])
+                                    button(type='submit', id="btnComentar" class=['btn','btn-primary','btn-block'], disabled) Comentar
+                                div(class=['hidden-lg','hidden-sm'])
+                                    button(type='submit', id="btnComentar_xs" class=['btn','btn-primary','btn-block'], disabled) Comentar
+
+                    //********************Fin de Formulario para los comentarios****************
+                    
+                    //********************Lista de comentarios**********************
+                    br.hidden-xs
+                    br.hidden-xs
+                    br
+                    ul(class=['media-list'] id="comments")
+                        if(comments.length != 0)
+                            each messageData in comments
+                                li(class=['media media1'])
+                                    div(class=['media-body'])
+                                        p
+                                            strong Comentario de - 
+                                                span.text-primary #{`${messageData.user_name} ${messageData.user_lastName}`} 
+                                                span - 
+                                                span= moment(messageData.fecha).fromNow()
+                                        //div(class="flecha-izquierda")
+                                        div.contenido #{messageData.mensaje}
+                    //********************Fin de Lista de comentarios****************
+    script.
+        //validamos las entradas del comentario
+        function validateInputText(e)
+        {
+            key = e.keyCode || e.which;
+            teclado = String.fromCharCode(key);
+            caracteres = /^[A-Za-z0-9\ñ\.\)\(\:\;\s]*$/;
+            especiales = "8-37-38-32-46-164";
+            teclado_especial = false;
+            for(var i in especiales)
+            {
+                if(key==especiales[i])
+                {
+                    teclado_especial = true;
+                    break;
+                }
+            }
+            if(!caracteres.test(teclado) && !teclado_especial)
+            {
+                return false;
+            }
+        }
+    include templates/footer

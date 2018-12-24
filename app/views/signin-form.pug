@@ -1,0 +1,68 @@
+extends layout
+block content
+    section(class=['app-login'])
+        div.container
+            h1= title
+            p Sube tu video para que todos puedan aprender de tu trabajo!!
+    div.container
+        br
+        div.row
+            div(class=['col-xs-12','col-sm-8','col-sm-offset-2','col-md-6','col-md-offset-3'])
+                div.panel.panel-default
+                    div.panel-body
+                        form(method="post", action="/signin")
+                            div.row
+                                div(class=['col-xs-12','col-sm-6'])
+                                    div.form-group
+                                        label Nombre(s)*
+                                        input(type="text",class="form-control",id="name",onkeypress="return validateInputCharacter(event)", name="name", placeholder="Nombre(s)", required)
+                                div(class=['col-xs-12','col-sm-6'])                                    
+                                    div.form-group
+                                        label Apellido(s)*
+                                        input(type="text",class="form-control",id="last_name",onkeypress="return validateInputCharacter(event)", name="last_name", placeholder="Apellido(s)", required)
+                            div.form-group
+                                label Género*
+                                div.input-group
+                                    span.input-group-addon
+                                        input(type="radio" name="gender" value=1 required)
+                                    input(type="text" class="form-control" value="Hombre" disabled)
+                                div.input-group
+                                    span.input-group-addon
+                                        input(type="radio" name="gender" value=0 required)
+                                    input(type="text" class="form-control" value="Mujer" disabled)
+                            div.form-group
+                                label Correo Electrónico*
+                                div.input-group
+                                    span(class=['input-group-addon'])
+                                        span @
+                                    input(type="email", class=['form-control'], id="email", name="email", placeholder="Ingresa tu correo" required)
+                                div#msg_error_email
+                            div.form-group
+                                label Contraseña*
+                                div.input-group
+                                    span(class=['input-group-addon'])
+                                        span(class=['glyphicon','glyphicon-asterisk'])
+                                    input(type="password", class=['form-control'], id="password", name="password", placeholder="Contraseña", required)
+                            div.form-group
+                                label Confirmar contraseña*
+                                div.input-group
+                                    span(class=['input-group-addon'])
+                                        span(class=['glyphicon','glyphicon-asterisk'])
+                                    input(type="password", class=['form-control'], id="confirm_password", name="confirm_password", placeholder="Confirmar contraseña", required)
+                                div#msg_error_password
+                            div.form-group
+                                label Empresa*
+                                div.input-group
+                                    span(class=['input-group-addon'])
+                                        span @
+                                    input(type="empresa", class=['form-control'], id="empresa", name="empresa", placeholder="Ingresa la empresa" required)
+                                div#msg_error_empresa
+                            button(type="submit", class=['btn','btn-signin'] onclick="return validarRegistro()") Registrar
+                    div.panel-footer
+                        span ¿Ya tienes una cuenta? 
+                        a(href="/login", class=['btn','btn-login']) Inicia Sesión
+                br
+    script(src="/js/validarRegistro.js")
+    footer(class=['app-footer','navbar-fixed-bottom'])
+            div.container
+                p Derechos Reservados @TeamUMG

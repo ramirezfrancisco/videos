@@ -1,0 +1,25 @@
+extends layout
+block content
+    include templates/nav
+    div.container
+        div.row
+            div(class=['col-xs-12'])
+                br
+                ol(class="breadcrumb")
+                    li: a(href="/inicio") Inicio
+                    li: a(href="/detalles/"+id_video) Volver al video
+                    li.active #{title}
+        div.row
+            div.col-xs-12.col-sm-8.col-md-6.col-sm-offset-2.col-md-offset-3
+                if(data.length == 0)
+                    div.well
+                        p Los usuarios no han votado todavía.
+                else
+                    ul.list-group
+                        each ratingOfUser in data
+                            li.list-group-item
+                                figure
+                                    img(src=`/image/avatars/${ratingOfUser.avatar}` class="img-responsive img-circle avatar_ratingOfUsers")
+                                span.badge #{ratingOfUser.votos} 
+                                span #{ratingOfUser.full_name}
+    include templates/footer
